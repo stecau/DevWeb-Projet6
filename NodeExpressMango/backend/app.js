@@ -3,6 +3,9 @@ const express = require('express');
 /* Importation du module (package) mongoose */
 const mongoose = require('mongoose');
 
+/* Importation du modèle mongoose 'Thing' */
+const Thing = require('./models/Thing');
+
 /* Création de notre application express 'app' */
 const app = express();
 
@@ -44,34 +47,43 @@ app.use((req, res, next) => {
 /* Express prend toutes les requêtes qui ont comme Content-Type application/json et 
 met à disposition leur body directement sur l'objet req, ce qui nous permet d'écrire le middleware POST suivant : */
 app.post('/api/stuff', (req, res, next) => {
-    console.log(req.body);
-    res.status(201).json({
-      message: 'Objet créé !'
+    // Création d'une instance 'thing' de notre modèle mongoose d'objet 'Thing'
+        // Avant cela on retire le champs ID du formulaire frontend car on utilisera celui de la DB mongo
+    delete req.body._id;
+    const thing = new Thing({
+        // Utilisation de l'opérateur 'spread' ... équivalant à 'title: req.body.title, ...'
+        ...req.body
     });
+    // On enregistre dans le base de donnée
+        // La méthode save de mongoose fait une promesse
+    thing.save()
+        // Quand tout se passe bien, il faut biensur renvoyer une réponse à la requete de création d'un objet (code 201)
+        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
+        // Avec catch, on capture l'error et on la transmet en réponse de la requête avec le code 400
+        .catch(error => res.status(400).json({ error }));
 });
+
+// Rajout d'une requête Get sur un objet avec son id
+    // :id permet d'avoir une requête dynamique et de capturer l'id de la requête dans les params (partie jsute après les :)
+app.get('/api/stuff/:id', (req, res, next) => {
+    // Méthode de l'objet Thing mongoose pour récupérer une seule instance par son id
+        // req.params.id pour récupérer l'id de la requête qui est comparé aux _id de la database
+    Thing.findOne({ _id: req.params.id }) // renvoie l'objet dans une promesse
+        // L'objet est trouvé, on renvoie le code 200 avezc l'objet également en réponse
+        .then(thing => res.status(200).json(thing))
+        // L'objet n'est pas trouvé, on renvoie l'erreur d'objet non trouvé (code 404)
+        .catch(error => res.status(404).json({ error }));
+  });
 
     // On change use en get pour intercepter uniquement les requête get
 app.get('/api/stuff', (req, res, next) => { // le 1er string en paramètre est la route (=endpoint) pour laquelle nous souhaitons enregistrer ce middleware, elle complète l'url
-    const stuff = [
-        {
-            _id: 'oeihfzeoi',
-            title: 'Mon premier objet',
-            description: 'Les infos de mon premier objet',
-            imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
-            price: 4900,
-            userId: 'qsomihvqios',
-        },
-        {
-            _id: 'oeihfzeomoihi',
-            title: 'Mon deuxième objet',
-            description: 'Les infos de mon deuxième objet',
-            imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
-            price: 2900,
-            userId: 'qsomihvqios',
-        },
-    ];
-    // Nous envoyons ces articles sous la forme de données JSON, avec un code 200 pour une demande réussie
-    res.status(200).json(stuff);
+    // nous utilisons la méthode find() dans notre modèle Mongoose afin de renvoyer un tableau contenant tous les Things dans notre base de données
+        // elle renvoie une promesse
+    Thing.find()
+        // Si tout va bien, on renvoie le status 200 et la liste des objet de la database comme réponse à la requête
+        .then(things => res.status(200).json(things))
+        // Si erreur, on attrappe l'erreur et on la renvoie comme réponse à la requête avec code erreur 400
+        .catch(error => res.status(400).json({ error }));
 });
 
 /* exportation de cette application pour y accéder depuis les autres fichiers de notre projet (exemple : node)*/
