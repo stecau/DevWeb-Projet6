@@ -4,6 +4,13 @@ const express = require('express');
 /* Création de notre application express 'app' */
 const app = express();
 
+/* Pour gérer la requête POST venant de l'application front-end,
+on a besoin d'en extraire le corps JSON.
+Pour cela, vous avez juste besoin d'un middleware très simple,
+mis à disposition par le framework Express.
+Juste après la déclaration de la constante  app  , ajoutez : */
+app.use(express.json());
+
 /* Création de la fonction de requête par la méthode use de express */
     /* Une application Express est fondamentalement une série de fonctions appelées middleware [app.use()].
     Chaque élément de middleware reçoit les objets request et response, peut les lire, les analyser et les manipuler, le cas échéant.
@@ -26,7 +33,17 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/stuff', (req, res, next) => { // le 1er string en paramètre est la route (=endpoint) pour laquelle nous souhaitons enregistrer ce middleware, elle complète l'url
+/* Express prend toutes les requêtes qui ont comme Content-Type application/json et 
+met à disposition leur body directement sur l'objet req, ce qui nous permet d'écrire le middleware POST suivant : */
+app.post('/api/stuff', (req, res, next) => {
+    console.log(req.body);
+    res.status(201).json({
+      message: 'Objet créé !'
+    });
+});
+
+    // On change use en get pour intercepter uniquement les requête get
+app.get('/api/stuff', (req, res, next) => { // le 1er string en paramètre est la route (=endpoint) pour laquelle nous souhaitons enregistrer ce middleware, elle complète l'url
     const stuff = [
         {
             _id: 'oeihfzeoi',
