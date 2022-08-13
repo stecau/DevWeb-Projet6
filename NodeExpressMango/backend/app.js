@@ -63,6 +63,25 @@ app.post('/api/stuff', (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 });
 
+// Rajout d'une requête Put (modification) sur un objet avec son id
+app.put('/api/stuff/:id', (req, res, next) => { // id en param de la req avec les :
+    // utilisation de la méthode 'updateOne' de l'objet mongoose Thing
+        // Elle prend en paramètre l'objet de comparaison ici sur id et en second paramètre l'objet modifié
+        // Attention sur l'id, bien utilisé l'id de la databse car immuable donc si modifier renverra une erreur
+        // Elle renvoie une promesse
+    Thing.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+        .then(() => res.status(200).json({ message: 'Objet modifié !'})) // tout va bien
+        .catch(error => res.status(400).json({ error })); // gestion des erreurs
+});
+
+// Rajout d'une requête d'effacement d'un objet avec son id
+app.delete('/api/stuff/:id', (req, res, next) => {
+    // Utilisation de la méthode 'deleteOne'
+    Thing.deleteOne({ _id: req.params.id })
+      .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+      .catch(error => res.status(400).json({ error }));
+  });
+
 // Rajout d'une requête Get sur un objet avec son id
     // :id permet d'avoir une requête dynamique et de capturer l'id de la requête dans les params (partie jsute après les :)
 app.get('/api/stuff/:id', (req, res, next) => {
