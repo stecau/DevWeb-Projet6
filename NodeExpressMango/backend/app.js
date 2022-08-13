@@ -1,8 +1,16 @@
 /* Importation du module (package) express de node */
 const express = require('express');
+/* Importation du module (package) mongoose */
+const mongoose = require('mongoose');
 
 /* Création de notre application express 'app' */
 const app = express();
+
+/* Connexion à la database mongodb Atlas */
+mongoose.connect('mongodb+srv://Stecau:Stecau396909@clusterstecau.rlrnod6.mongodb.net/?retryWrites=true&w=majority',
+    { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 /* Pour gérer la requête POST venant de l'application front-end,
 on a besoin d'en extraire le corps JSON.
