@@ -10,12 +10,18 @@ const Thing = require('../models/Thing');
     Express prend toutes les requêtes qui ont comme Content-Type application/json et 
     met à disposition leur body directement sur l'objet req, ce qui nous permet d'écrire le middleware POST suivant : */
 exports.createThing = (req, res, next) => {
+    // Création de l'objet requête qui est au format texte json car contient une image éventuellement
+    const thingObject = JSON.parse(req.body.thing)
     // Création d'une instance 'thing' de notre modèle mongoose d'objet 'Thing'
         // Avant cela on retire le champs ID du formulaire frontend car on utilisera celui de la DB mongo
-    delete req.body._id;
+    delete thingObject._id;
+        // On en fait jamais confiance au client donc on supprime également le userId
+    delete thingObject.userId;
     const thing = new Thing({
         // Utilisation de l'opérateur 'spread' ... équivalant à 'title: req.body.title, ...'
-        ...req.body
+        ...thingObject,
+        userId: req.auth.userId,
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` // Création de l'url du fichier
     });
     // On enregistre dans le base de donnée
         // La méthode save de mongoose fait une promesse
@@ -28,13 +34,29 @@ exports.createThing = (req, res, next) => {
 
 // Rajout d'une requête Put (modification) sur un objet avec son id
 exports.modifyThing = (req, res, next) => { // id en param de la req avec les :
-    // utilisation de la méthode 'updateOne' de l'objet mongoose Thing
-        // Elle prend en paramètre l'objet de comparaison ici sur id et en second paramètre l'objet modifié
-        // Attention sur l'id, bien utilisé l'id de la databse car immuable donc si modifier renverra une erreur
-        // Elle renvoie une promesse
-    Thing.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Objet modifié !'})) // tout va bien
-        .catch(error => res.status(400).json({ error })); // gestion des erreurs
+    // Si fichier ou pas (un champs file est présent ou pas)
+    const thingObjet = req.file ? { // si champs file alors req sous forme de texte que l'on convertie en objet
+        ...JSON.parse(req.body.thing),
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    } : { ...req.body };
+    // Mesure de sécurité, on supprime le userID de l'objet
+    delete thingObjet._userId;
+    // Mesure de sécurité également en cherchant l'objet dans la base et en vérifiant que l'utilisateur à les droits de modification
+    Thing.findOne({_id: req.params.id}) // Méthode de mongoose de l'objet Thing pour trouver un objet dans la db avec promesse
+        .then((thing => {
+            if (thing.userId != req.auth.userId) { // ce n'est pas le même utilisateur
+                res.status(401).json({ message: 'Non-autorisé' })
+            } else {
+                // utilisation de la méthode 'updateOne' de l'objet mongoose Thing
+                // Elle prend en paramètre l'objet de comparaison ici sur id et en second paramètre l'objet modifié
+                // Attention sur l'id, bien utilisé l'id de la databse car immuable donc si modifier renverra une erreur
+                // Elle renvoie une promesse
+                Thing.updateOne({ _id: req.params.id }, { ...thingObjet, _id: req.params.id })
+                    .then(() => res.status(200).json({ message: 'Objet modifié !'})) // tout va bien
+                    .catch(error => res.status(401).json({ error })); // gestion des erreurs
+            };
+        }))
+        .catch(error => res.status(400).json({ error }));
 };
 
 // Rajout d'une requête d'effacement d'un objet avec son id

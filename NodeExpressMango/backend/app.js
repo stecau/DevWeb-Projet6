@@ -6,6 +6,8 @@
 const express = require('express');
 /* Importation du module (package) mongoose */
 const mongoose = require('mongoose');
+/* Importation du module (package) path */
+const path = require('path');
 
 /* Importation de notre router pour stuff 'stuffRoutes' */
 const stuffRoutes = require('./routes/stuff');
@@ -54,6 +56,8 @@ app.use((req, res, next) => {
 app.use('/api/stuff', stuffRoutes);
 /* Utlisation de notre router 'userRoutes' pour notre application 'app' */
 app.use('/api/auth', userRoutes);
+/* Rajout d'une route statique pour la récupération des images sur le serveur */
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 /* exportation de cette application pour y accéder depuis les autres fichiers de notre projet (exemple : node)*/
 module.exports = app;
