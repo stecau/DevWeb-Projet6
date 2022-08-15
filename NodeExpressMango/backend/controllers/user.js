@@ -31,6 +31,29 @@ exports.signup = (req, res, next) => {
 
 /* Création de la requête Get (connexion) d'un objet 'user' */
 exports.login = (req, res, next) => {
-    
+    // Utilisation de la méthode mongoose 'findOne' de notre object utilisateur
+    User.findOne({ email: req.body.email})
+        .then(user => {
+            if (user === null) {
+                // code erreur 401 Unauthorized car il manque des informations d'authentification valides pour la ressource
+                res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte' }) // Message flou car pas de divulgation si utilisateur ou pas dans la base
+            } else {
+                // Utilisateur dans la base, on compare le mot de passe
+                bcrypt.compare(req.body.password, user.password) // C'est un promesse
+                    .then(valid => { // bcrypt renvoie une réponse sur la comparaison de mot de passe
+                        if (!valid) { // Mot de passe incorrect
+                            // code erreur 401 Unauthorized car il manque des informations d'authentification valides pour la ressource
+                            res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte' }) // Message flou car pas de divulgation si utilisateur ou pas dans la base
+                        } else { // Mot de passe valid, renvoie un objet necessaire pour l'identification de l'utilisateur dans les requête qu'il fait 
+                            res.status(200).json({
+                                userId: user._id,
+                                token: 'TOKEN'
+                            });
+                        };
+                    })
+                    .catch(error => res.status(500).json({ error }));
+            };
+        })
+        .catch(error => res.status(500).json({ error })); 
 };
 
