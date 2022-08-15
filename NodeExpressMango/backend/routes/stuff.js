@@ -30,4 +30,4 @@ router.get('/:id', stuffCtrl.getOneThing);
 router.get('/', stuffCtrl.getAllThings);
 
 /* Exportation de notre router express */
-module.exports = router
+module.exports = router;

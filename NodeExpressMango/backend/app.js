@@ -9,6 +9,8 @@ const mongoose = require('mongoose');
 
 /* Importation de notre router pour stuff 'stuffRoutes' */
 const stuffRoutes = require('./routes/stuff');
+/* Importation de notre router pour user 'userRoutes' */
+const userRoutes = require('./routes/user');
 
 /* Création de notre application express 'app' */
 const app = express();
@@ -50,6 +52,8 @@ app.use((req, res, next) => {
 
 /* Utlisation de notre router 'stuffRoutes' pour notre application 'app' */
 app.use('/api/stuff', stuffRoutes);
+/* Utlisation de notre router 'userRoutes' pour notre application 'app' */
+app.use('/api/auth', userRoutes);
 
 /* exportation de cette application pour y accéder depuis les autres fichiers de notre projet (exemple : node)*/
 module.exports = app;
