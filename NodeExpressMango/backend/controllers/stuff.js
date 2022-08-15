@@ -2,6 +2,8 @@
 /* Création de notre module (package) de 'controleur (logique métier)' de nos routes : */
 /*-------------------------------------------------------------------------------------*/
 
+/* Importation du package fs (file system) pour la suppression de fichier */
+const fs = require('fs');
 /* Importation du modèle mongoose 'Thing' */
 const Thing = require('../models/Thing');
 
@@ -61,10 +63,24 @@ exports.modifyThing = (req, res, next) => { // id en param de la req avec les :
 
 // Rajout d'une requête d'effacement d'un objet avec son id
 exports.deleteThing = (req, res, next) => {
-    // Utilisation de la méthode 'deleteOne'
-    Thing.deleteOne({ _id: req.params.id })
-      .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-      .catch(error => res.status(400).json({ error }));
+    // Utilisation de la méthode mongoose findOne (promesse)
+    Thing.findOne({ _id: req.params.id})
+        .then(thing => {
+            if (thing.userId != req.auth.userId) { // ce n'est pas le même utilisateur
+                res.status(401).json({ message: 'Non-autorisé' })
+            } else {
+                // Suppression du fichier sur le serveur
+                const filename = thing.imageUrl.split('/images/')[1]; // récupération du nom du fichier dans le dossier 'images'
+                // méthode de suppression de fichier avec fonction asynchrone
+                fs.unlink(`images/${filename}`, () => {
+                    // Utilisation de la méthode 'deleteOne' pour la suppression dans la base de données
+                    Thing.deleteOne({ _id: req.params.id })
+                        .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+                        .catch(error => res.status(400).json({ error }));
+                });
+            };
+        })
+        .catch(error => res.status(500).json({ error }));
 };
 
 // Rajout d'une requête Get sur un objet avec son id
