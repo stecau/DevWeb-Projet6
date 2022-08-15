@@ -4,6 +4,8 @@
 
 /* Importation du module (package) bcrypt pour crypter les mots de passe */
 const bcrypt = require('bcrypt');
+/* Importation du module (package) jsonwebtoken pour générer et comparer des tokens utilisateurs */
+const jwt = require('jsonwebtoken');
 
 /* Importation de notre modèle mongoose 'User' */
 const User = require('../models/User');
@@ -47,7 +49,11 @@ exports.login = (req, res, next) => {
                         } else { // Mot de passe valid, renvoie un objet necessaire pour l'identification de l'utilisateur dans les requête qu'il fait 
                             res.status(200).json({
                                 userId: user._id,
-                                token: 'TOKEN'
+                                token: jwt.sign(
+                                    { userId: user._id }, // 1er arg : Objet avec le user id
+                                    'RANDOM_TOKEN_SECRET', // 2ème arg : La clé token pour l'encodage
+                                    { expiresIn: '24h'} // 3ème arg : Arg de configuration avec une expiration de 24h (il faut se reconnecter au bout de 24h)
+                                )
                             });
                         };
                     })
