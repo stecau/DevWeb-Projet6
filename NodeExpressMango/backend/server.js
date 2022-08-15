@@ -1,3 +1,7 @@
+/*--------------------------------------------------------*/
+/* Création de notre server pour notre application 'app': */
+/*--------------------------------------------------------*/
+
 /* Importation du module (package) http de node */
 // require = commande pour importer un package
 const http = require('http');

@@ -1,3 +1,7 @@
+/*--------------------------------------------------------------------------------*/
+/* Création de notre module (package) 'Thing' modèle d'objets de la db mongoose : */
+/*--------------------------------------------------------------------------------*/
+
 /* Importation du module (package) mongoose */
 const mongoose = require('mongoose');
 

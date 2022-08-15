@@ -1,10 +1,14 @@
+/*---------------------------------------------------------*/
+/* Création de notre application 'app' pour notre server : */
+/*---------------------------------------------------------*/
+
 /* Importation du module (package) express de node */
 const express = require('express');
 /* Importation du module (package) mongoose */
 const mongoose = require('mongoose');
 
-/* Importation du modèle mongoose 'Thing' */
-const Thing = require('./models/Thing');
+/* Importation de notre router pour stuff 'stuffRoutes' */
+const stuffRoutes = require('./routes/stuff');
 
 /* Création de notre application express 'app' */
 const app = express();
@@ -44,66 +48,8 @@ app.use((req, res, next) => {
     next();
 });
 
-/* Express prend toutes les requêtes qui ont comme Content-Type application/json et 
-met à disposition leur body directement sur l'objet req, ce qui nous permet d'écrire le middleware POST suivant : */
-app.post('/api/stuff', (req, res, next) => {
-    // Création d'une instance 'thing' de notre modèle mongoose d'objet 'Thing'
-        // Avant cela on retire le champs ID du formulaire frontend car on utilisera celui de la DB mongo
-    delete req.body._id;
-    const thing = new Thing({
-        // Utilisation de l'opérateur 'spread' ... équivalant à 'title: req.body.title, ...'
-        ...req.body
-    });
-    // On enregistre dans le base de donnée
-        // La méthode save de mongoose fait une promesse
-    thing.save()
-        // Quand tout se passe bien, il faut biensur renvoyer une réponse à la requete de création d'un objet (code 201)
-        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
-        // Avec catch, on capture l'error et on la transmet en réponse de la requête avec le code 400
-        .catch(error => res.status(400).json({ error }));
-});
-
-// Rajout d'une requête Put (modification) sur un objet avec son id
-app.put('/api/stuff/:id', (req, res, next) => { // id en param de la req avec les :
-    // utilisation de la méthode 'updateOne' de l'objet mongoose Thing
-        // Elle prend en paramètre l'objet de comparaison ici sur id et en second paramètre l'objet modifié
-        // Attention sur l'id, bien utilisé l'id de la databse car immuable donc si modifier renverra une erreur
-        // Elle renvoie une promesse
-    Thing.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Objet modifié !'})) // tout va bien
-        .catch(error => res.status(400).json({ error })); // gestion des erreurs
-});
-
-// Rajout d'une requête d'effacement d'un objet avec son id
-app.delete('/api/stuff/:id', (req, res, next) => {
-    // Utilisation de la méthode 'deleteOne'
-    Thing.deleteOne({ _id: req.params.id })
-      .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-      .catch(error => res.status(400).json({ error }));
-  });
-
-// Rajout d'une requête Get sur un objet avec son id
-    // :id permet d'avoir une requête dynamique et de capturer l'id de la requête dans les params (partie jsute après les :)
-app.get('/api/stuff/:id', (req, res, next) => {
-    // Méthode de l'objet Thing mongoose pour récupérer une seule instance par son id
-        // req.params.id pour récupérer l'id de la requête qui est comparé aux _id de la database
-    Thing.findOne({ _id: req.params.id }) // renvoie l'objet dans une promesse
-        // L'objet est trouvé, on renvoie le code 200 avezc l'objet également en réponse
-        .then(thing => res.status(200).json(thing))
-        // L'objet n'est pas trouvé, on renvoie l'erreur d'objet non trouvé (code 404)
-        .catch(error => res.status(404).json({ error }));
-  });
-
-    // On change use en get pour intercepter uniquement les requête get
-app.get('/api/stuff', (req, res, next) => { // le 1er string en paramètre est la route (=endpoint) pour laquelle nous souhaitons enregistrer ce middleware, elle complète l'url
-    // nous utilisons la méthode find() dans notre modèle Mongoose afin de renvoyer un tableau contenant tous les Things dans notre base de données
-        // elle renvoie une promesse
-    Thing.find()
-        // Si tout va bien, on renvoie le status 200 et la liste des objet de la database comme réponse à la requête
-        .then(things => res.status(200).json(things))
-        // Si erreur, on attrappe l'erreur et on la renvoie comme réponse à la requête avec code erreur 400
-        .catch(error => res.status(400).json({ error }));
-});
+/* Utlisation de notre router 'stuffRoutes' pour notre application 'app' */
+app.use('/api/stuff', stuffRoutes);
 
 /* exportation de cette application pour y accéder depuis les autres fichiers de notre projet (exemple : node)*/
 module.exports = app;
