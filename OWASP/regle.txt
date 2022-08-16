@@ -32,5 +32,17 @@ L'AUTHENTIFICATION
             * Limitez la durée de l'ID de session ;
             * Modifiez le nom d'ID de session par défaut.
 
+LES DONNEES EN TRANSIT
+    Un piratge se positionne entre le serveur et l'ordinateur client pour intercepter les flux d'échange = L'attaque de l'homme du milieu (MITM)
 
+    PROTECTION :
+        - Cela passe par la sécurisation de la couche de transport lors de l’échange des données => HTTPS avec certificat SSL
+        - Sécurisez les requêtes GET et POST
+        - Le CORS (Cross-Origin Ressource Sharing)
+
+    Bonnes Pratiques :
+        1- N'utilisez GET que pour récupérer des informations.
+        2- Utilisez POST pour les informations qui seront manipulées.
+        3- Toutes les requêtes POST doivent utiliser HTTPS/SSL pour s'assurer que le corps est chiffré.
+        4- Vérifiez tous les modules tiers que vous utilisez pour créer des requêtes GET/POST et utilisez HTTPS pour chacun d'entre eux !
 
