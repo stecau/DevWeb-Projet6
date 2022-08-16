@@ -88,3 +88,24 @@ LE CROSS-Site Request Forgery (CSRF)
         - Utiliser un jeton unique pour chaque demande.
         - Utiliser des jetons anti-falsification qui valident le jeton côté client par rapport au jeton côté serveur web.
         - Effectuer des recherches sur les bibliothèques CSRF basées sur la sécurité.
+
+LE XML EXTERNAL ENTITIES
+    Pour comprendre ce que sont les XXE, il faut d’abord définir le langage XML.
+    Le langage XML (Extensible Markup Language) a été créé pour stocker, partager et transporter des données entre systèmes.
+    Il est indépendant de la plateforme et du langage.
+
+    Une attaque XXE ou injection XXE est un type d'attaque contre une application qui utilise XML.
+    Cette attaque se produit lorsque l'entrée XML contenant une référence à une entité externe est traitée par un analyseur XML mal configuré.
+    Cette attaque peut entraîner la divulgation de données confidentielles, un déni de service, une falsification de requête côté serveur et d'autres impacts sur le système.
+
+    PORTECTION :
+        - désactiver les entités externes dans tous les langages. Il s'agit généralement d'une balise binaire vrai/faux
+
+LA DESERIALISATION NON SECURISEE:
+    La désérialisation non sécurisée est une vulnérabilité qui se produit lorsque des données non fiables sont utilisées pour abuser de la logique d'une application, causer un déni de service (DoS, Deny of Service), ou même exécuter du code arbitraire.
+
+    PROTECTION :
+    une mesure défensive consisterait à valider les données d'entrée et à vérifier la fonctionnalité de l'objet
+
+
+
