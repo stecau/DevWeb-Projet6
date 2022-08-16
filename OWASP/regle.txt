@@ -58,3 +58,14 @@ LES DONNEES STOCKEES
             * minimisation des données (respect des RGPD)
             => DEUX MOYENs, le masquage dynamique des données ou le clonage et génération des masques de données
 
+LES CONTROLES D'ACCES
+    N'autorisé une personnes authentifiée que a certains roles (niveaux d'accés)
+
+    PROTECTION :
+        - La restriction d'l’URL
+        - Sécurisez les contrôles d’accès :
+            * Au lieu de nommer vos pages cibles avec un sens, utilisez un tableau de valeurs clés qui font référence à vos objets.
+            * Modifiez les noms par défaut de vos pages web.
+            * Assurez-vous que toutes les pages ont un contrôle d'authentification.
+            * Personnalisez vos exceptions et vos codes d'erreur.
+
