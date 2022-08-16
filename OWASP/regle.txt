@@ -69,3 +69,22 @@ LES CONTROLES D'ACCES
             * Assurez-vous que toutes les pages ont un contrôle d'authentification.
             * Personnalisez vos exceptions et vos codes d'erreur.
 
+LE CROSS SITE SCRIPTING (XSS)
+    Les attaques cross-site scripting ou XSS sont faites pour prendre le contrôle de votre navigateur.
+    Avec une attaque XSS, un attaquant va essayer de prendre le contrôle de votre navigateur en injectant un script JavaScript dans l'application web.
+    Il pourra l’injecter directement dans un formulaire, mais il peut également l’injecter dans l'URL, l'en-tête HTTP ou d'autres parties du framework utilisé
+
+    PROTECTION :
+    Respectez les bonnes pratiques :
+        - Appliquez la validation des données d'entrée : pour empêcher les attaques communes, il est possible de blacklister certains caractères comme les balises script.
+        - Appliquez la transformation des entrées : vous pouvez encoder toutes vos entrées dans une entité de caractères HTML ou du texte pour qu'il n'exécute aucun script. Il existe des fonctions simples et des bibliothèques qui peuvent vous aider à encoder tout votre HTML et JavaScript.
+        - Configurez vos cookies avec le flag HttpOnly
+
+LE CROSS-Site Request Forgery (CSRF)
+    Un pirate peut créer un lien XSS et le distribuer par le biais de l'ingénierie sociale pour accéder au navigateur d'un utilisateur
+
+    PROTECTION :
+        - Exiger la réauthentification pour toutes les demandes des utilisateurs.
+        - Utiliser un jeton unique pour chaque demande.
+        - Utiliser des jetons anti-falsification qui valident le jeton côté client par rapport au jeton côté serveur web.
+        - Effectuer des recherches sur les bibliothèques CSRF basées sur la sécurité.
