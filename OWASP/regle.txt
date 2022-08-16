@@ -33,7 +33,7 @@ L'AUTHENTIFICATION
             * Modifiez le nom d'ID de session par défaut.
 
 LES DONNEES EN TRANSIT
-    Un piratge se positionne entre le serveur et l'ordinateur client pour intercepter les flux d'échange = L'attaque de l'homme du milieu (MITM)
+    Un piratage se positionne entre le serveur et l'ordinateur client pour intercepter les flux d'échange = L'attaque de l'homme du milieu (MITM)
 
     PROTECTION :
         - Cela passe par la sécurisation de la couche de transport lors de l’échange des données => HTTPS avec certificat SSL
@@ -45,4 +45,16 @@ LES DONNEES EN TRANSIT
         2- Utilisez POST pour les informations qui seront manipulées.
         3- Toutes les requêtes POST doivent utiliser HTTPS/SSL pour s'assurer que le corps est chiffré.
         4- Vérifiez tous les modules tiers que vous utilisez pour créer des requêtes GET/POST et utilisez HTTPS pour chacun d'entre eux !
+
+LES DONNEES STOCKEES
+    Un pirate peut s'il arrive à se connecter, récupérer des données sur la base de données comme les mots de passe
+
+    PROTECTION :
+        - Hasher les mots de passe sur la base de données (bcrypt ou ARgon2 [recommandé par l'OWASP pour Argon2])
+        - Utiliser le principe du moindre privilège sur les comptes de la base de données
+        - Cacher les données sensibles dans la db par :
+            * anonymisation (recommandé par OWASP)
+            * pseudonymisation (recommandé par RGPD)
+            * minimisation des données (respect des RGPD)
+            => DEUX MOYENs, le masquage dynamique des données ou le clonage et génération des masques de données
 
