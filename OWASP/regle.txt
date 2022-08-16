@@ -110,3 +110,27 @@ LA DESERIALISATION NON SECURISEE:
 SECURISE VOTRE ENVIREMENT DE DEV EGALEMEN !!!
 
 
+OWASP TOP TEN 2017 :
+Les dix principales vulnérabilités web, identifiées par l'OWASP :
+
+1- L’injection : elle permet d’injecter du code arbitraire pour effectuer des actions qui seront interprétées par l’application. Pour bloquer ce genre d’attaque, il est possible d’utiliser des fonctions sécurisées ou encore de valider les entrées utilisateurs.
+
+2- Le piratage de session : il se produit lorsque le système d’authentification a été contourné, par exemple en utilisant la technique de force brute. Pour se protéger contre ce type d’attaque, il faudra non seulement forcer les utilisateurs à utiliser des mots de passe forts, mais également sécuriser l’utilisation des cookies de session, par exemple.
+
+3- L'exposition de données sensibles : elle se produit en cas de fuite de données, par exemple. Pour se protéger contre ce type d’attaque, il faudra utiliser des solutions de chiffrement pour sécuriser les données en transit et celles stockées sur l’application.
+
+4- Les entités externes XML (XXE) : les vulnérabilités XXE peuvent être utilisées pour accéder à des données internes de l’application normalement non accessibles. Pour éviter ce type d’attaque, il est possible de désactiver les entités externes. 
+
+5- Le contournement des contrôles d'accès : les contrôles d’accès permettent d’empêcher un utilisateur d’accéder aux données d’un autre utilisateur. Pour éviter qu’un  attaquant puisse exploiter cette vulnérabilité, assurez-vous que toutes les pages de votre application ont un contrôle d'authentification. 
+
+6- Les mauvaises configurations de sécurité : elles peuvent être à l’origine de nombreuses attaques. Assurez-vous de garder à jour les composants de votre application pour éviter qu’une vulnérabilité ne soit exploitée. 
+
+7- Les scripts XSS (cross-site scripting) : les failles XSS permettent à un attaquant d’injecter du code JavaScript. Utilisez la validation et la transformation des entrées utilisateurs pour les éviter.
+
+8- La désérialisation non sécurisée : cette vulnérabilité peut permettre à un attaquant de mener une attaque d’élévation de privilège, de replay ou encore d’injection. Pour éviter ce type d’attaque, il est possible d’implémenter des contrôles sur l’état du code. 
+
+9- L'utilisation de composants contenant des vulnérabilités connues : une application est basée sur de nombreux composants. Pour éviter l’exploitation d’une vulnérabilité, il faudra maintenir à jour et identifier les éléments de votre application.
+
+10- Le manque de monitoring et de surveillance : le monitoring et la surveillance permettront de détecter une intrusion ou un comportement suspicieux au plus tôt. Vérifiez régulièrement vos logs et mettez en place des reportings.
+
+
