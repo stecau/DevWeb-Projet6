@@ -107,5 +107,6 @@ LA DESERIALISATION NON SECURISEE:
     PROTECTION :
     une mesure défensive consisterait à valider les données d'entrée et à vérifier la fonctionnalité de l'objet
 
+SECURISE VOTRE ENVIREMENT DE DEV EGALEMEN !!!
 
 
