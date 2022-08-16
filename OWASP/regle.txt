@@ -9,3 +9,28 @@ L'INJECTION
         - Utiliser un Object Relational Mapper (ORM) : pg et knex avec javascript
         - Utiliser l'API OWASP - ESAPI
 
+L'AUTHENTIFICATION
+    C'est un piratage de session par :
+    - force brute = l’utilisation d’une multitude de couples identifiant/mot de passe de manière automatique, jusqu’à obtenir le bon
+    - credential stuffing = attaque utilisée pour essayer toutes les combinaisons de noms d'utilisateur et de mots de passe (volés), jusqu'à ce que le pirate s'authentifie
+    - les cookies sont aussi des failles, surtoutles cookies de session
+
+    PROTECTION :
+        - Les cookies de session (attention pas les cookies de suivi) doivent :
+            * Etre chiffrés lors de la transmission via HTTPS
+            * ne pas stocker d'informations d'identification en texte clair
+            * avoir une date d'expiration
+        - Exiger un mot de passe fort, c'est-à-dire contenant des majuscules, des minuscules, des chiffres et des caractères spéciaux
+        - Exiger un changement de mot de passe tous les X mois par exemple
+        - Verrouillage de compte après X tentatives de connection non-authorisé
+        - Changer ou désactiver les comptes par défaut
+        - Implémenter une connection forte, c’est-à-dire avec plusieurs facteurs d’authentification, comme la validation par SMS ou par mail, par exemple
+        - Protégez les identifiants de session au moyen d’algorithme de chiffrement
+
+        - Voici quelques conseils pour vous aider à développer vos mécanismes d'identification et de validation de session :
+            * Ne mettez pas l’ID de session dans l’URL ;
+            * Limitez la durée de l'ID de session ;
+            * Modifiez le nom d'ID de session par défaut.
+
+
+
