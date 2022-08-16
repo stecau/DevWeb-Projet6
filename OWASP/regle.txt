@@ -1,0 +1,11 @@
+L'INJECTION
+    Se fait dans un input avec écriture de code (requête SQL, code javascript, html,...).
+
+    PROTECTION :
+        - Avec pare-feu d'application web ou WAF,
+        - Avec la validation des entrèes (par exemple, l'input ne contient pas de signe '=' ou "'" ou '"'),
+        - Avec des requêtes préparées (pas de connection directe à la base de données),
+        - En SQL, éviter les requêtes dynamique et si requête dynamique, utiliser la fonction sp_executesql(),
+        - Utiliser un Object Relational Mapper (ORM) : pg et knex avec javascript
+        - Utiliser l'API OWASP - ESAPI
+
