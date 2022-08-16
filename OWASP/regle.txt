@@ -1,0 +1,136 @@
+L'INJECTION
+    Se fait dans un input avec écriture de code (requête SQL, code javascript, html,...).
+
+    PROTECTION :
+        - Avec pare-feu d'application web ou WAF,
+        - Avec la validation des entrèes (par exemple, l'input ne contient pas de signe '=' ou "'" ou '"'),
+        - Avec des requêtes préparées (pas de connection directe à la base de données),
+        - En SQL, éviter les requêtes dynamique et si requête dynamique, utiliser la fonction sp_executesql(),
+        - Utiliser un Object Relational Mapper (ORM) : pg et knex avec javascript
+        - Utiliser l'API OWASP - ESAPI
+
+L'AUTHENTIFICATION
+    C'est un piratage de session par :
+    - force brute = l’utilisation d’une multitude de couples identifiant/mot de passe de manière automatique, jusqu’à obtenir le bon
+    - credential stuffing = attaque utilisée pour essayer toutes les combinaisons de noms d'utilisateur et de mots de passe (volés), jusqu'à ce que le pirate s'authentifie
+    - les cookies sont aussi des failles, surtoutles cookies de session
+
+    PROTECTION :
+        - Les cookies de session (attention pas les cookies de suivi) doivent :
+            * Etre chiffrés lors de la transmission via HTTPS
+            * ne pas stocker d'informations d'identification en texte clair
+            * avoir une date d'expiration
+        - Exiger un mot de passe fort, c'est-à-dire contenant des majuscules, des minuscules, des chiffres et des caractères spéciaux
+        - Exiger un changement de mot de passe tous les X mois par exemple
+        - Verrouillage de compte après X tentatives de connection non-authorisé
+        - Changer ou désactiver les comptes par défaut
+        - Implémenter une connection forte, c’est-à-dire avec plusieurs facteurs d’authentification, comme la validation par SMS ou par mail, par exemple
+        - Protégez les identifiants de session au moyen d’algorithme de chiffrement
+
+        - Voici quelques conseils pour vous aider à développer vos mécanismes d'identification et de validation de session :
+            * Ne mettez pas l’ID de session dans l’URL ;
+            * Limitez la durée de l'ID de session ;
+            * Modifiez le nom d'ID de session par défaut.
+
+LES DONNEES EN TRANSIT
+    Un piratage se positionne entre le serveur et l'ordinateur client pour intercepter les flux d'échange = L'attaque de l'homme du milieu (MITM)
+
+    PROTECTION :
+        - Cela passe par la sécurisation de la couche de transport lors de l’échange des données => HTTPS avec certificat SSL
+        - Sécurisez les requêtes GET et POST
+        - Le CORS (Cross-Origin Ressource Sharing)
+
+    Bonnes Pratiques :
+        1- N'utilisez GET que pour récupérer des informations.
+        2- Utilisez POST pour les informations qui seront manipulées.
+        3- Toutes les requêtes POST doivent utiliser HTTPS/SSL pour s'assurer que le corps est chiffré.
+        4- Vérifiez tous les modules tiers que vous utilisez pour créer des requêtes GET/POST et utilisez HTTPS pour chacun d'entre eux !
+
+LES DONNEES STOCKEES
+    Un pirate peut s'il arrive à se connecter, récupérer des données sur la base de données comme les mots de passe
+
+    PROTECTION :
+        - Hasher les mots de passe sur la base de données (bcrypt ou ARgon2 [recommandé par l'OWASP pour Argon2])
+        - Utiliser le principe du moindre privilège sur les comptes de la base de données
+        - Cacher les données sensibles dans la db par :
+            * anonymisation (recommandé par OWASP)
+            * pseudonymisation (recommandé par RGPD)
+            * minimisation des données (respect des RGPD)
+            => DEUX MOYENs, le masquage dynamique des données ou le clonage et génération des masques de données
+
+LES CONTROLES D'ACCES
+    N'autorisé une personnes authentifiée que a certains roles (niveaux d'accés)
+
+    PROTECTION :
+        - La restriction d'l’URL
+        - Sécurisez les contrôles d’accès :
+            * Au lieu de nommer vos pages cibles avec un sens, utilisez un tableau de valeurs clés qui font référence à vos objets.
+            * Modifiez les noms par défaut de vos pages web.
+            * Assurez-vous que toutes les pages ont un contrôle d'authentification.
+            * Personnalisez vos exceptions et vos codes d'erreur.
+
+LE CROSS SITE SCRIPTING (XSS)
+    Les attaques cross-site scripting ou XSS sont faites pour prendre le contrôle de votre navigateur.
+    Avec une attaque XSS, un attaquant va essayer de prendre le contrôle de votre navigateur en injectant un script JavaScript dans l'application web.
+    Il pourra l’injecter directement dans un formulaire, mais il peut également l’injecter dans l'URL, l'en-tête HTTP ou d'autres parties du framework utilisé
+
+    PROTECTION :
+    Respectez les bonnes pratiques :
+        - Appliquez la validation des données d'entrée : pour empêcher les attaques communes, il est possible de blacklister certains caractères comme les balises script.
+        - Appliquez la transformation des entrées : vous pouvez encoder toutes vos entrées dans une entité de caractères HTML ou du texte pour qu'il n'exécute aucun script. Il existe des fonctions simples et des bibliothèques qui peuvent vous aider à encoder tout votre HTML et JavaScript.
+        - Configurez vos cookies avec le flag HttpOnly
+
+LE CROSS-Site Request Forgery (CSRF)
+    Un pirate peut créer un lien XSS et le distribuer par le biais de l'ingénierie sociale pour accéder au navigateur d'un utilisateur
+
+    PROTECTION :
+        - Exiger la réauthentification pour toutes les demandes des utilisateurs.
+        - Utiliser un jeton unique pour chaque demande.
+        - Utiliser des jetons anti-falsification qui valident le jeton côté client par rapport au jeton côté serveur web.
+        - Effectuer des recherches sur les bibliothèques CSRF basées sur la sécurité.
+
+LE XML EXTERNAL ENTITIES
+    Pour comprendre ce que sont les XXE, il faut d’abord définir le langage XML.
+    Le langage XML (Extensible Markup Language) a été créé pour stocker, partager et transporter des données entre systèmes.
+    Il est indépendant de la plateforme et du langage.
+
+    Une attaque XXE ou injection XXE est un type d'attaque contre une application qui utilise XML.
+    Cette attaque se produit lorsque l'entrée XML contenant une référence à une entité externe est traitée par un analyseur XML mal configuré.
+    Cette attaque peut entraîner la divulgation de données confidentielles, un déni de service, une falsification de requête côté serveur et d'autres impacts sur le système.
+
+    PORTECTION :
+        - désactiver les entités externes dans tous les langages. Il s'agit généralement d'une balise binaire vrai/faux
+
+LA DESERIALISATION NON SECURISEE:
+    La désérialisation non sécurisée est une vulnérabilité qui se produit lorsque des données non fiables sont utilisées pour abuser de la logique d'une application, causer un déni de service (DoS, Deny of Service), ou même exécuter du code arbitraire.
+
+    PROTECTION :
+    une mesure défensive consisterait à valider les données d'entrée et à vérifier la fonctionnalité de l'objet
+
+SECURISE VOTRE ENVIREMENT DE DEV EGALEMEN !!!
+
+
+OWASP TOP TEN 2017 :
+Les dix principales vulnérabilités web, identifiées par l'OWASP :
+
+1- L’injection : elle permet d’injecter du code arbitraire pour effectuer des actions qui seront interprétées par l’application. Pour bloquer ce genre d’attaque, il est possible d’utiliser des fonctions sécurisées ou encore de valider les entrées utilisateurs.
+
+2- Le piratage de session : il se produit lorsque le système d’authentification a été contourné, par exemple en utilisant la technique de force brute. Pour se protéger contre ce type d’attaque, il faudra non seulement forcer les utilisateurs à utiliser des mots de passe forts, mais également sécuriser l’utilisation des cookies de session, par exemple.
+
+3- L'exposition de données sensibles : elle se produit en cas de fuite de données, par exemple. Pour se protéger contre ce type d’attaque, il faudra utiliser des solutions de chiffrement pour sécuriser les données en transit et celles stockées sur l’application.
+
+4- Les entités externes XML (XXE) : les vulnérabilités XXE peuvent être utilisées pour accéder à des données internes de l’application normalement non accessibles. Pour éviter ce type d’attaque, il est possible de désactiver les entités externes. 
+
+5- Le contournement des contrôles d'accès : les contrôles d’accès permettent d’empêcher un utilisateur d’accéder aux données d’un autre utilisateur. Pour éviter qu’un  attaquant puisse exploiter cette vulnérabilité, assurez-vous que toutes les pages de votre application ont un contrôle d'authentification. 
+
+6- Les mauvaises configurations de sécurité : elles peuvent être à l’origine de nombreuses attaques. Assurez-vous de garder à jour les composants de votre application pour éviter qu’une vulnérabilité ne soit exploitée. 
+
+7- Les scripts XSS (cross-site scripting) : les failles XSS permettent à un attaquant d’injecter du code JavaScript. Utilisez la validation et la transformation des entrées utilisateurs pour les éviter.
+
+8- La désérialisation non sécurisée : cette vulnérabilité peut permettre à un attaquant de mener une attaque d’élévation de privilège, de replay ou encore d’injection. Pour éviter ce type d’attaque, il est possible d’implémenter des contrôles sur l’état du code. 
+
+9- L'utilisation de composants contenant des vulnérabilités connues : une application est basée sur de nombreux composants. Pour éviter l’exploitation d’une vulnérabilité, il faudra maintenir à jour et identifier les éléments de votre application.
+
+10- Le manque de monitoring et de surveillance : le monitoring et la surveillance permettront de détecter une intrusion ou un comportement suspicieux au plus tôt. Vérifiez régulièrement vos logs et mettez en place des reportings.
+
+
