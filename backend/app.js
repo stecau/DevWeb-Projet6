@@ -9,17 +9,17 @@ const mongoose = require('mongoose');
 /* Importation du module (package) path */
 // const path = require('path');
 
+/* Importation de notre router pour user 'userRoutes' */
+const userRoutes = require('./routes/user');
 /* Importation de notre router pour stuff 'stuffRoutes' */
 // const stuffRoutes = require('./routes/stuff');
-/* Importation de notre router pour user 'userRoutes' */
-// const userRoutes = require('./routes/user');
 
 /* Création de notre application express 'app' */
 const app = express();
 
 /* Connexion à la database mongodb Atlas */
 const MONGOOSE_PWD = process.env.MONGOOSE_PWD;
-mongoose.connect(`mongodb+srv://Stecau:${MONGOOSE_PWD}@clusterstecau.rlrnod6.mongodb.net/?retryWrites=true&w=majority`,
+mongoose.connect(`mongodb+srv://Stecau:${MONGOOSE_PWD}@clusterstecau.rlrnod6.mongodb.net/Piiquante?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
@@ -39,10 +39,11 @@ app.use((req, res, next) => {
     next();
 });
 
+/* Utlisation de notre router 'userRoutes' pour notre application 'app' */
+app.use('/api/auth', userRoutes);
+
 /* Utlisation de notre router 'stuffRoutes' pour notre application 'app' */
 // app.use('/api/stuff', stuffRoutes);
-/* Utlisation de notre router 'userRoutes' pour notre application 'app' */
-// app.use('/api/auth', userRoutes);
 /* Rajout d'une route statique pour la récupération des images sur le serveur */
 // app.use('/images', express.static(path.join(__dirname, 'images')));
 
