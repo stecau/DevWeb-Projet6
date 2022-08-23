@@ -11,8 +11,8 @@ const path = require('path');
 
 /* Importation de notre router pour user 'userRoutes' */
 const userRoutes = require('./routes/user');
-/* Importation de notre router pour stuff 'stuffRoutes' */
-// const stuffRoutes = require('./routes/stuff');
+/* Importation de notre router pour sauce 'sauceRoutes' */
+const sauceRoutes = require('./routes/sauce');
 
 /* Création de notre application express 'app' */
 const app = express();
@@ -43,9 +43,8 @@ app.use((req, res, next) => {
 app.use('/api/auth', userRoutes);
 /* Rajout d'une route statique pour la récupération des images sur le serveur */
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
-/* Utlisation de notre router 'stuffRoutes' pour notre application 'app' */
-// app.use('/api/stuff', stuffRoutes);
+/* Utlisation de notre router 'sauceRoutes' pour notre application 'app' */
+app.use('/api/sauces', sauceRoutes);
 
 
 /* exportation de cette application pour y accéder depuis les autres fichiers de notre projet (exemple : node)*/
