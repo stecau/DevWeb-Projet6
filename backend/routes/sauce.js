@@ -18,6 +18,9 @@ const sauceCtrl = require('../controllers/sauce');
 /* Création de la requête Post (création) d'un objet 'sauce' */
 router.post('/', auth, multer, sauceCtrl.createSauce);
 
+/* Création de la requête Post (création) d'un like sur une sauce */
+router.post('/:id/like', auth, sauceCtrl.likeSauce);
+
 // Rajout d'une requête Put (modification) sur un objet avec son id
 router.put('/:id', auth, multer, sauceCtrl.modifySauce);
 
