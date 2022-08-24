@@ -30,6 +30,37 @@ exports.createSauce = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 };
 
+/* Création de la requête Post (création) d'un like sur une 'sauce' */
+exports.likeSauce = (req, res, next) => {
+    const like = req.body.like;
+    const userId = req.body.userId;
+    // Méthode de mongoose de l'objet Sauce pour trouver un objet dans la db avec promesse
+    Sauce.findOne({_id: req.params.id})
+        .then((sauce => {
+            if (!sauce.usersLiked.includes(userId) && like === 1) { // l'utilisateur n'est pas dans les 'likes' et il 'like'
+                sauce.likes += 1;
+                sauce.usersLiked.push(userId);
+            };
+            if (!sauce.usersDisliked.includes(userId) && like === -1) { // l'utilisateur n'est pas dans les 'dislikes' et il 'dislike'
+                sauce.dislikes += 1;
+                sauce.usersDisliked.push(userId);
+            };
+            if (sauce.usersLiked.includes(userId) && like === 0) { // l'utilisateur est pas dans les 'likes' et il annule son 'like'
+                sauce.likes -= 1;
+                sauce.usersLiked.splice(sauce.usersLiked.indexOf(userId, 0), 1);
+            };
+            if (sauce.usersDisliked.includes(userId) && like === 0) { // l'utilisateur est dans les 'dislikes' et il annule son 'dislike'
+                sauce.dislikes -= 1;
+                sauce.usersDisliked.splice(sauce.usersDisliked.indexOf(userId, 0), 1);
+            };
+            // On enregistre dans le base de donnée
+            sauce.save() // La méthode save de mongoose fait une promesse
+                .then(() => res.status(201).json({ message: 'Objet enregistré avec un nouveau status de like !' }))
+                .catch(error => res.status(400).json({ error }));
+            }))
+        .catch(error => res.status(400).json({ error }));
+};
+
 // Rajout d'une requête Put (modification) sur un objet avec son id
 exports.modifySauce = (req, res, next) => {
     // Si fichier ou pas (un champs file est présent ou pas)
