@@ -22,8 +22,12 @@ const storage = multer.diskStorage({
     // Fonction définisant le nom de fichier (attribut = la requête req, le fichier file et callback)
     filename: (req, file, callback) => {
         const name = file.originalname.split(' ').join('_');
-        const extension = MINE_TYPES[file.mimetype];
-        callback(null, name + Date.now() + '.' + extension);
+        const nameSansExtension = name.split('.');
+        const extension = nameSansExtension.pop();
+        if (extension != MINE_TYPES[file.mimetype]) {
+            extension = MINE_TYPES[file.mimetype];
+        }
+        callback(null, nameSansExtension.join('.') + Date.now() + '.' + extension);
     }
 });
 
