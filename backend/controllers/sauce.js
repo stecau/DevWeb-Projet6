@@ -45,6 +45,8 @@ exports.modifySauce = (req, res, next) => {
             if (sauce.userId != req.auth.userId) { // ce n'est pas le même utilisateur
                 res.status(401).json({ message: 'Non-autorisé' })
             } else {
+                // Si changement d'image, alors on supprime l'ancienne image du serveur
+                suppressionServeurAncienneImage(sauce, sauceObjet);
                 // utilisation de la méthode 'updateOne' de l'objet mongoose Sauce qui renvoie une promesse
                 Sauce.updateOne({ _id: req.params.id }, { ...sauceObjet, _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Objet modifié !'})) // tout va bien
@@ -90,4 +92,19 @@ exports.getAllSauces = (req, res, next) => { // le 1er string en paramètre est 
     Sauce.find() // renvoie la liste des objets dans une promesse
         .then(sauces => res.status(200).json(sauces))
         .catch(error => res.status(400).json({ error }));
+};
+
+// Fonction de supression de l'ancienne image du serveur si modification de l'image d'une sauce
+const suppressionServeurAncienneImage = (sauce, sauceObjet) => {
+    if ('imageUrl' in sauceObjet) {
+        if (sauceObjet.imageUrl != sauce.imageUrl) {
+            // Suppression du fichier sur le serveur
+            const filename = sauce.imageUrl.split('/images/')[1]; // récupération du nom du fichier dans le dossier 'images'
+            // méthode de suppression de fichier avec fonction asynchrone
+            fs.unlink(`images/${filename}`, (err) => {
+                if (err) throw err;
+                return `images/${filename} was deleted`;
+            });
+        };
+    };
 };
