@@ -74,7 +74,7 @@ exports.modifySauce = (req, res, next) => {
     Sauce.findOne({_id: req.params.id}) // Méthode de mongoose de l'objet Sauce pour trouver un objet dans la db avec promesse
         .then((sauce => {
             if (sauce.userId != req.auth.userId) { // ce n'est pas le même utilisateur
-                res.status(401).json({ message: 'Non-autorisé' })
+                res.status(403).json({ message: 'unauthorized request.' })
             } else {
                 // Si changement d'image, alors on supprime l'ancienne image du serveur
                 suppressionServeurAncienneImage(sauce, sauceObjet);
