@@ -10,7 +10,12 @@ const multer = require('multer');
 const MINE_TYPES = {
     'image/jpg': 'jpg',
     'image/jpeg': 'jpg',
-    'image/png': 'png'
+    'image/png': 'png',
+    'image/gif': 'gif',
+    'image/bmp': 'bmp',
+    'image/webp': 'webp',
+    'image/svg+xml': 'svg',
+    'image/x-icon': 'ico'
 };
 
 /* Création d'un objet de configuration pour multer (méthode diskStorage) */
@@ -23,7 +28,7 @@ const storage = multer.diskStorage({
     filename: (req, file, callback) => {
         const name = file.originalname.split(' ').join('_');
         const nameSansExtension = name.split('.');
-        const extension = nameSansExtension.pop();
+        let extension = nameSansExtension.pop();
         if (extension != MINE_TYPES[file.mimetype]) {
             extension = MINE_TYPES[file.mimetype];
         }
