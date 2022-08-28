@@ -1,12 +1,12 @@
-/*--------------------------------------------------------*/
+/*--------------------------------------------------------------*/
 /* Création de notre server pour notre application 'Piiquante': */
-/*--------------------------------------------------------*/
+/*--------------------------------------------------------------*/
 
-/* Importation du module (package) http de node */
+/* Importation du module (package) 'http' de node */
 const http = require('http');
-/* Importation du module (package) dotenv de node */
+/* Importation du module (package) 'dotenv' de node */
 const dotenv = require('dotenv');
-dotenv.config();
+dotenv.config(); // Attention : Nécessite le fichier '.env'
 
 /* Importation de notre application express 'app' */
 const app = require('./app');
@@ -26,7 +26,7 @@ const normalizePort = val => {
 };
 
     // Définition du port
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
     // Fonction errorHandler

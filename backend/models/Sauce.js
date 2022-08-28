@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------------------*/
-/* Création de notre module (package) 'Sauce' modèle deSauce de la db mongoose : */
+/* Création de notre module (package) 'Sauce' modèle de Sauce de la db mongoose : */
 /*------------------------------------------------------------------------------------*/
 
-/* Importation du module (package) mongoose */
+/* Importation du module (package) 'mongoose' */
 const mongoose = require('mongoose');
 
 /* Définition du schéma mongoose pour les Sauces qui utilise des objets {} */

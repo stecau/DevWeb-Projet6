@@ -2,9 +2,9 @@
 /* Création de notre module (package) 'User' modèle d'utilisateur de la db mongoose : */
 /*------------------------------------------------------------------------------------*/
 
-/* Importation du module (package) mongoose */
+/* Importation du module (package) 'mongoose' */
 const mongoose = require('mongoose');
-/* Importation du module (package) mongoose-unique-validator */
+/* Importation du module (package) 'mongoose-unique-validator' */
 const uniqueValidator = require('mongoose-unique-validator');
 
 /* Définition du schéma mongoose pour les users qui utilise des objets {} */

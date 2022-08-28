@@ -2,18 +2,18 @@
 /* Création de notre module (package) de 'controleur (logique métier)' de nos routes sauce : */
 /*-------------------------------------------------------------------------------------------*/
 
-/* Importation du package fs (file system) pour la suppression de fichier */
+/* Importation du package 'fs' (file system) pour la suppression de fichier */
 const fs = require('fs');
 /* Importation du modèle mongoose 'Sauce' */
 const Sauce = require('../models/Sauce');
 
 /* Création de la requête Post (création) d'un objet 'sauce' */
 exports.createSauce = (req, res, next) => {
-    // Création de l'objet requête qui est au format texte json car contient une image éventuellement
-    const sauceObject = JSON.parse(req.body.sauce)
+    // Création de l'objet requête qui est au format texte json car contient une image
+    const sauceObject = JSON.parse(req.body.sauce);
     // Création d'une instance 'sauce' de notre modèle mongoose d'objet 'Sauce'
     delete sauceObject._id; // Avant cela on retire le champs ID du formulaire frontend car on utilisera celui de la DB mongo
-    delete sauceObject.userId; // On en fait jamais confiance au client donc on supprime également le userId
+    delete sauceObject.userId; // On ne fait jamais confiance au client donc on supprime également le userId
     // Initialisation comptage like(s) et dislike(s)
     sauceObject.likes = 0;
     sauceObject.dislikes = 0;
@@ -26,7 +26,7 @@ exports.createSauce = (req, res, next) => {
     });
     // On enregistre dans le base de donnée
     sauce.save() // La méthode save de mongoose fait une promesse
-        .then(() => res.status(201).json({ message: 'Objet enregistré !' }))
+        .then(() => res.status(201).json({ message: 'Objet Sauce enregistré !' }))
         .catch(error => res.status(400).json({ error }));
 };
 
@@ -55,7 +55,7 @@ exports.likeSauce = (req, res, next) => {
             };
             // On enregistre dans le base de donnée
             sauce.save() // La méthode save de mongoose fait une promesse
-                .then(() => res.status(201).json({ message: 'Objet enregistré avec un nouveau status de like !' }))
+                .then(() => res.status(201).json({ message: 'Objet Sauce enregistré avec un nouveau status de like !' }))
                 .catch(error => res.status(400).json({ error }));
             }))
         .catch(error => res.status(400).json({ error }));
@@ -74,13 +74,13 @@ exports.modifySauce = (req, res, next) => {
     Sauce.findOne({_id: req.params.id}) // Méthode de mongoose de l'objet Sauce pour trouver un objet dans la db avec promesse
         .then((sauce => {
             if (sauce.userId != req.auth.userId) { // ce n'est pas le même utilisateur
-                res.status(403).json({ message: 'unauthorized request.' })
+                res.status(403).json({ message: 'unauthorized request.' });
             } else {
                 // Si changement d'image, alors on supprime l'ancienne image du serveur
                 suppressionServeurAncienneImage(sauce, sauceObjet);
                 // utilisation de la méthode 'updateOne' de l'objet mongoose Sauce qui renvoie une promesse
                 Sauce.updateOne({ _id: req.params.id }, { ...sauceObjet, _id: req.params.id })
-                    .then(() => res.status(200).json({ message: 'Objet modifié !'})) // tout va bien
+                    .then(() => res.status(200).json({ message: 'Objet Sauce modifié !'})) // tout va bien
                     .catch(error => res.status(401).json({ error })); // gestion des erreurs
             };
         }))
@@ -93,7 +93,7 @@ exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id})
         .then(sauce => {
             if (sauce.userId != req.auth.userId) { // ce n'est pas le même utilisateur
-                res.status(401).json({ message: 'Non-autorisé' })
+                res.status(403).json({ message: 'unauthorized request.' });
             } else {
                 // Suppression du fichier sur le serveur
                 const filename = sauce.imageUrl.split('/images/')[1]; // récupération du nom du fichier dans le dossier 'images'
@@ -118,7 +118,7 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 // Rajout d'une requête Get sur la totalité des objets 'sauce'
-exports.getAllSauces = (req, res, next) => { // le 1er string en paramètre est la route (=endpoint) pour laquelle nous souhaitons enregistrer ce middleware, elle complète l'url
+exports.getAllSauces = (req, res, next) => {
     // nous utilisons la méthode find() dans notre modèle Mongoose afin de renvoyer un tableau contenant tous les Sauces dans notre base de données
     Sauce.find() // renvoie la liste des objets dans une promesse
         .then(sauces => res.status(200).json(sauces))
@@ -127,14 +127,14 @@ exports.getAllSauces = (req, res, next) => { // le 1er string en paramètre est 
 
 // Fonction de supression de l'ancienne image du serveur si modification de l'image d'une sauce
 const suppressionServeurAncienneImage = (sauce, sauceObjet) => {
-    if ('imageUrl' in sauceObjet) {
-        if (sauceObjet.imageUrl != sauce.imageUrl) {
+    if ('imageUrl' in sauceObjet) { // Si la requête (modification de l'objet sauce) contient une image
+        if (sauceObjet.imageUrl != sauce.imageUrl) { // Si les url entre la requête et l'image (sauce en base de données) sur le serveur sont différentes
             // Suppression du fichier sur le serveur
             const filename = sauce.imageUrl.split('/images/')[1]; // récupération du nom du fichier dans le dossier 'images'
-            // méthode de suppression de fichier avec fonction asynchrone
+            // méthode de suppression de fichier avec fonction callback
             fs.unlink(`images/${filename}`, (err) => {
                 if (err) throw err;
-                return `images/${filename} was deleted`;
+                console.log(`images/${filename} was deleted`);
             });
         };
     };

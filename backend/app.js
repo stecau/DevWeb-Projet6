@@ -2,11 +2,11 @@
 /* Création de notre application 'app' pour notre server : */
 /*---------------------------------------------------------*/
 
-/* Importation du module (package) express de node */
+/* Importation du module (package) 'express' de node */
 const express = require('express');
-/* Importation du module (package) mongoose */
+/* Importation du module (package) 'mongoose' */
 const mongoose = require('mongoose');
-/* Importation du module (package) path */
+/* Importation du module (package) 'path' */
 const path = require('path');
 
 /* Importation de notre router pour user 'userRoutes' */
@@ -27,7 +27,7 @@ mongoose.connect(`mongodb+srv://Stecau:${MONGOOSE_PWD}@clusterstecau.rlrnod6.mon
 /* Extraction corps JSON de la requête POST venant de l'application front-end avec le middleware Express */
 app.use(express.json());
 
-/* Création de la fonction de requête par la méthode use de express */
+/* Création de la fonction de requête par la méthode 'use' de express */
     // 1ère étape, rajout des headers pour éviter les problème de CORS
 app.use((req, res, next) => {
     // accéder à notre API depuis n'importe quelle origine ( '*' )
@@ -47,5 +47,5 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', sauceRoutes);
 
 
-/* exportation de cette application pour y accéder depuis les autres fichiers de notre projet (exemple : node)*/
+/* exportation de cette application pour y accéder depuis les autres fichiers de notre projet */
 module.exports = app;

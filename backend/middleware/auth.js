@@ -3,7 +3,7 @@
 /*                     de connection de l'utilisateur (token)                   */
 /*------------------------------------------------------------------------------*/
 
-/* Importation du module (package) jsonwebtoken */
+/* Importation du module (package) 'jsonwebtoken' */
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
@@ -12,7 +12,9 @@ module.exports = (req, res, next) => {
         // récupération du token dans le header de la request
         const token = req.headers.authorization.split(' ')[1]; 
         // décodage du token récupéré avec la clé secrète d'encodage
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+            // Récupération de la chaine d'encodage
+        const RANDOM_TOKEN_SECRET = process.env.RANDOM_TOKEN_SECRET;
+        const decodedToken = jwt.verify(token, RANDOM_TOKEN_SECRET);
         // récupération du userId de l'objet decodedToken avec la key de l'objet 'userId'
         const userId = decodedToken.userId; 
         // Rajout d'un objet d'authentification dans l'entête de la requête

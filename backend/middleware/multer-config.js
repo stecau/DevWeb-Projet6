@@ -3,7 +3,7 @@
 /*                            d'image dans le serveur                             */
 /*--------------------------------------------------------------------------------*/
 
-/* Importation du module (package) multer */
+/* Importation du module (package) 'multer' */
 const multer = require('multer');
 
 /* Création d'un dictionnaire 'MINE_TYPES' */
